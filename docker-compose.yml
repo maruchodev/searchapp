@@ -1,0 +1,31 @@
+version: "3"
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  posgres-database-volume:
+    driver: local
+
+services:
+  searchapp:
+    build: ./
+    tty: true # 起動したままにする
+    volumes:
+      - ./:/searchapp
+    depends_on:
+      - postgres
+    ports:
+      - 8080:80
+
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: searchappuser
+      POSTGRES_PASSWORD: searchappchangeme
+      POSTGRES_DB: searchappdb
+    ports:
+      - 15432:5432
+    volumes:
+      - posgres-database-volume:/var/lib/postgresql/data
